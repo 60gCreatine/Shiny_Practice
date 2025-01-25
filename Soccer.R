@@ -3,6 +3,12 @@ library(tidyverse)
 # Basic UI og Server
 df <- readRDS("dataforvideo.rds")
 
+library(skimr)
+  dfvars=skim(df)
+  # Giver information om selve dataframen
+  dfvarsed=dfvars %>% select(c("skim_type","skim_variable"))
+  # Giver nere specifikt overblik over variabler i df
+  
 ui <- fluidPage(
   tabsetPanel(
     tabPanel("Spiller",
@@ -12,7 +18,9 @@ ui <- fluidPage(
                          selected = "age"
                          ),
                  # Her kommer plottet
+                  plotOutput("spplot")
              
+    ),
     tabPanel("Skud",
             ),
     tabPanel("Kategoriske var",
@@ -21,22 +29,11 @@ ui <- fluidPage(
             ),
   )
 )
-)
-server <- function(input,output){
-  
-  
-}
-
-
-library(shiny)
-
-ui <- fluidPage(
-
-)
 
 server <- function(input, output, session) {
-  renderPlot({
-    ggplot()
+  output$spplot <- renderPlot({
+    xval=input$sp
+    ggplot(df,aes_string(x=xval))+geom_histogram()
   })
 }
 
